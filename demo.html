@@ -1,0 +1,59 @@
+<!--
+  @license
+  Copyright (c) 2015 Didier Roche <didrocks@ubuntu.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
+-->
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>seed-element Demo</title>
+
+  <script src="../webcomponentsjs/webcomponents.min.js"></script>
+  <link rel="import" href="img-fixheight.html">
+
+
+</head>
+<body unresolved>
+
+  <h1>Image without width limit</h1>
+
+  <p>An example of using <code>&lt;img-fixheight&gt;</code>, the image content is cropped and centered, with a fixed
+    height of 560px at 1x. Width corresponds to page width. You can use your favorite developer tools to use this page
+    at different widths, scale factors, and see how the banner is responsive.
+  </p>
+
+  <img-fixheight srcpattern="imgdemo/banner_::::.png" alt="Main banner"
+                 height=560 widths="[480, 960, 1260, 1920, 2500]" ratios="[1, 2, 3]">
+  </img-fixheight>
+
+  <h1>Image with width limit</h1>
+
+  <p>Same example than previous, but with limitmaxwidth attribute. This will use the maximum value specified in widths
+    and limit the maximum width to it, whatever scale factor is used.</p>
+
+  <div>
+    <img-fixheight srcpattern="imgdemo/banner_::::.png" alt="Main banner" limitmaxwidth
+                   height=560 widths="[480, 960, 1260, 1920, 2500]" ratios="[1, 2, 3]">
+    </img-fixheight>
+  </div>
+
+</body>
+</html>
