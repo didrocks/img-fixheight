@@ -66,7 +66,7 @@ For instance:
                    height=560 widths="[480, 960, 1260, 1920, 2500]" ratios="[1, 2, 3]" limitmaxwidth>
     </img-fixheight>
 
-Everytime a computed image with is larger than 2500 pixels, the 2500 reference will be used, meaning:
+Everytime a computed image width is larger than 2500 pixels, the 2500 reference will be used, meaning:
 
 elements smaller than `480` css pixels wide will load `img/banner_480x560.jpg` at 1x,
 `img/banner_960x1120.jpg` at 2x and `img/banner_1440x1680.jpg` at 3x.
@@ -104,7 +104,7 @@ example: 2500x560.
 ### Getting images on the server
 
 Note that this is of course client-side only, meaning that corresponding images need to exist on the server.
-You can use the `prepare-image` tool to generate them server-side. See the [readme](README.md) for more information.
+You can use the `prepare-image` tool to generate them server-side. See the [readme](README.md) for more informations.
 
 @element img-fixheight
 @blurb Element providing responsive support for fixed height images.
