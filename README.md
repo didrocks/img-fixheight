@@ -34,10 +34,10 @@ Example:
 Where:
  * `<fixed height at 1x in pixels>` is the desired height with a scale factor of 1x in device pixels.
 index.html* `<dest pattern>` is the output pattern for cut images. `::::` will be replaced by the image size.
- * various image at maximum width size, with an optional scale factor suffix. If not scale factor is defined, 1x would
+ * various images at maximum width size, with an optional scale factor suffix. If no scale factor is defined, 1x would
 	be used. Only one image per scaled factor is accepted.
  * one or more --breakpoint `<width>` options defining multiple breakpoints in css pixels that would be used to delimit
-	different image size that would be used. -b is equivalent to --breakpoints. At least one breakpoint is required.
+	different image sizes that would be used. -b is equivalent to --breakpoints. At least one breakpoint is required.
 
   Note that we currently require that the height of the images corresponds to fixed_height * scale factor.
 
