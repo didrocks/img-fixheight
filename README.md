@@ -1,6 +1,8 @@
 img-fixheight element
 ==========================
 
+[![Build Status](https://travis-ci.org/didrocks/img-fixheight.svg?branch=master)](https://travis-ci.org/didrocks/img-fixheight)
+
 See the [component page](http://polymerlabs.github.io/img-fixheight) for more information.
 
 ## Getting Started
