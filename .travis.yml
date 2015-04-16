@@ -1,0 +1,13 @@
+language: node_js
+env:
+- DISPLAY=':99.0'
+before_install:
+- "sh -e /etc/init.d/xvfb start"
+install:
+- "npm install -g web-component-tester"
+- "npm install bower -g"
+- "bower install"
+script:
+- wct test/index.html
+node_js:
+  - "0.12"
