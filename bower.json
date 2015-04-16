@@ -1,0 +1,30 @@
+{
+  "name": "img-fixheight",
+  "version": "0.0.1",
+  "authors": [
+    "Didier Roche <didrocks@ubuntu.com>"
+  ],
+  "description": "Element providing responsive images support with a fixed height.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "banner",
+    "image",
+    "fixed",
+    "height"
+  ],
+  "main": "img-fixheight.html",
+  "license": "MIT",
+  "homepage": "https://github.com/didrocks/img-fixheight/",
+  "ignore": [
+    "/.*",
+    "/tests/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.4"
+  },
+  "devDependencies": {
+    "web-component-tester": "*"
+  }
+}

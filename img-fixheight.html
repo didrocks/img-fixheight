@@ -1,0 +1,261 @@
+<!--
+  @license
+  Copyright (c) 2015 Didier Roche <didrocks@ubuntu.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
+-->
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+The img-fixheight is an element implementing responsive support for fixed height images.
+You can provide breakpoints, scale factors and optional limit the maximum width for this image.
+
+### Examples
+
+#### Full responsive example
+
+    <img-fixheight srcpattern="img/banner_::::.jpg" alt="Main banner"
+                   height=560 widths="[480, 960, 1260, 1920, 2500]" ratios="[1, 2, 3]">
+    </img-fixheight>
+
+This will create a responsive element holding images, with a fixed height of 560 css pixels. The alt attribute
+is assigned to the <img> element.
+
+In this example:
+
+elements smaller than `480` css pixels wide will load `img/banner_480x560.jpg` at 1x,
+`img/banner_960x1120.jpg` at 2x and `img/banner_1440x1680.jpg` at 3x.
+
+elements smaller than `960` css pixels wide will load `img/banner_960x560.jpg` at 1x,
+`img/banner_1920x1120.jpg` at 2x and `img/banner_2880x1680.jpg` at 3x.
+
+elements smaller than `1260` css pixels wide will load `img/banner_1260x560.jpg` at 1x,
+`img/banner_2520x1120.jpg` at 2x and `img/banner_3780x1680.jpg` at 3x.
+
+elements smaller than `1920` css pixels wide will load `img/banner_1920x560.jpg` at 1x,
+`img/banner_3840x1120.jpg` at 2x and `img/banner_5760x1680.jpg` at 3x.
+
+elements `larger` than `1920` css pixels wide will load `img/banner_2500x560.jpg` at 1x,
+`img/banner_5000x1120.jpg` at 2x and `img/banner_7500x1680.jpg` at 3x.
+
+All images are cropped and centered.
+
+#### Limit maximum width
+
+The `limitmaxwidth` attribute will limit image width size to the maximum provided in the `widths` attribute.
+
+For instance:
+
+    <img-fixheight srcpattern="img/banner_::::.jpg" alt="Main banner"
+                   height=560 widths="[480, 960, 1260, 1920, 2500]" ratios="[1, 2, 3]" limitmaxwidth>
+    </img-fixheight>
+
+Everytime a computed image with is larger than 2500 pixels, the 2500 reference will be used, meaning:
+
+elements smaller than `480` css pixels wide will load `img/banner_480x560.jpg` at 1x,
+`img/banner_960x1120.jpg` at 2x and `img/banner_1440x1680.jpg` at 3x.
+
+elements smaller than `960` css pixels wide will load `img/banner_960x560.jpg` at 1x,
+`img/banner_1920x1120.jpg` at 2x and `img/banner_2500x1680.jpg` at 3x.
+
+elements smaller than `1260` css pixels wide will load `img/banner_1260x560.jpg` at 1x,
+`img/banner_2500x1120.jpg` at 2x and `img/banner_2500x1680.jpg` at 3x.
+
+elements smaller than `1920` css pixels wide will load `img/banner_1920x560.jpg` at 1x,
+`img/banner_2500x1120.jpg` at 2x and `img/banner_2500x1680.jpg` at 3x.
+
+elements `larger` than `1920` css pixels wide will load `img/banner_2500x560.jpg` at 1x,
+`img/banner_2500x1120.jpg` at 2x and `img/banner_2500x1680.jpg` at 3x.
+
+#### Different image alignement.
+
+As there is very few changes your element size is matching breakpoints, the image is cropped inside your container.
+The default alignement is `centered`, you can align it left or right by using `alignleft` or `alignright` attribute.
+
+Example:
+
+    <img-fixheight srcpattern="img/banner_::::.jpg" alt="Main banner" alignright
+                   height=560 widths="[480, 960, 1260, 1920, 2500]" ratios="[1, 2, 3]" limitmaxwidth>
+    </img-fixheight>
+
+This will align right all images that this element will load.
+
+### Support note
+
+Browser not supporting the <picture> and srcset elements will default to the maximum specified width at 1x. In that
+example: 2500x560.
+
+### Getting images on the server
+
+Note that this is of course client-side only, meaning that corresponding images need to exist on the server.
+You can use the `prepare-image` tool to generate them server-side. See the [readme](README.md) for more information.
+
+@element img-fixheight
+@blurb Element providing responsive support for fixed height images.
+@status alpha
+@homepage http://polymerlabs.github.io/img-fixheight
+-->
+<polymer-element name="img-fixheight" attributes="srcpattern alt height widths ratios limitmaxwidth alignleft alignright">
+
+  <template>
+
+    <link rel="stylesheet" href="img-fixheight.css">
+
+    <picture>
+      <template repeat="{{breakpoint in sortedwidths | definebreakpoints}}">
+        <source media="(min-width: {{breakpoint}}px)" srcset="{{computesrcset(srcpattern, breakpoint, height, ratios, limitmaxwidth)}}">
+      </template>
+      <img imgleft?="{{alignleft}}" imgright?="{{alignright}}"
+          src="{{patterntopath(srcpattern, maxint(widths), height)}}"
+          srcset="{{computesrcset(srcpattern, 0, height, ratios, limitmaxwidth)}}"
+          alt="{{alt}}" />
+    </picture>
+
+  </template>
+
+  <script>
+    Polymer({
+      /**
+       * The `srcpattern` attribute is used to format all image names. Four :
+       * will be replaced by the resolution name
+       * Example: img/banner1_::::.jpg will be transformed to
+       *          img/banner1_1024x560.jpg if such a resolution is generated.
+       *
+       * @attribute srcpattern
+       * @type string
+       * @default '::::'
+       */
+       srcpattern: '::::',
+
+      /**
+      * The `alt` attribute is used as alt attribute for the <img> tag.
+      *
+      * @attribute alt
+      * @type string
+      * @default ''
+      */
+      alt: '',
+
+      /**
+       * The `height` attribute sets the fixed height at 1x
+       *
+       * @attribute height
+       * @type int
+       * @default 0
+       */
+      height: 0,
+
+      created: function() {
+        /**
+        * `widths` is an array of different widths used to define breakpoints and maximum widths for images at 1x.
+        * Browsers not supporting picture or srcset will use the maximum specified width in the list at 1x.
+        *
+        * @property widths
+        * @type array[int]
+        * @default []
+        */
+        this.widths = [];
+
+        /**
+        * `ratios` is an array of different ratios used for reponsive images
+        *
+        * @property ratios
+        * @type array[int]
+        * @default [1]
+        */
+        this.ratios = [1];
+      },
+
+      /**
+      * `limitmaxwidth` is a property to limit all images to the maximum width property even if breakpoint width * scale factor is larger than it.
+      *
+      * @property limitmaxwidth
+      * @type bool
+      * @default false
+      */
+      limitmaxwidth: false,
+
+      /**
+      * `alignleft` is a property to align the image left instead of centering.
+      *
+      * @property alignleft
+      * @type bool
+      * @default false
+      */
+      alignleft: false,
+
+      /**
+      * `alignright` is a property to align the image right instead of centering.
+      *
+      * @property alignright
+      * @type bool
+      * @default false
+      */
+      alignright: false,
+
+      computed: {
+        maxwidth: 'maxint(widths)',
+        sortedwidths: 'sortint(widths)',
+      },
+
+      /* sort in ascending order an int array */
+      sortint: function(values) {
+        return values.sort(function(a, b) { return a-b });
+      },
+
+      /* return max integer from an array */
+      maxint: function(values) {
+        return this.sortint(values)[values.length - 1];
+      },
+
+      /* convert from a srcpattern to img path */
+      patterntopath: function (srcpattern, width, height) {
+        return srcpattern.replace("::::", width + "x" + height);
+      },
+
+      /* return srset for a breakpoint width value, at various pixel ratios */
+      computesrcset: function(srcpattern, breakpoint, height, ratios, limitmaxwidth) {
+        width = this.sortedwidths[this.sortedwidths.indexOf(breakpoint) + 1];
+        srcset = ""
+
+        ratios.forEach(function (ratio) {
+          scaled_width = width * ratio;
+          scaled_height = height * ratio;
+          if (limitmaxwidth === true && scaled_width > this.maxwidth)
+            scaled_width = this.maxwidth;
+          srcset += this.patterntopath(srcpattern, scaled_width, scaled_height) + " " + ratio +"x, ";
+        }.bind(this));
+
+        return srcset;
+      },
+
+      /* return unique array elements */
+      _unique: function(value, index, array) {
+        return array.indexOf(value) === index;
+      },
+
+      /* return inverse order of unique breakpoints */
+      definebreakpoints: function(breakpoints) {
+        return breakpoints.filter(this._unique).slice(0, -1).reverse();
+      },
+
+    });
+  </script>
+
+</polymer-element>
