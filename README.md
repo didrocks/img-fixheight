@@ -57,31 +57,45 @@ This would generate:
  * all images for `3x`: `/tmp/banner_1440x1680.jpg` (breakpoint 480), `/tmp/banner_2880x1680.jpg` (breakpoint 960),
 `/tmp/banner_3780x1680.jpg` (breakpoint 1260), `/tmp/banner_4000x1680.jpg` (for any width > 1260, as 4000 < 2500*3)
 
-## Testing this element
+## Play with this element
 
-This element has some unit tests, to get them running, one easy method is to run a simple web server that ships with Python, using the commands:
+This element has some unit tests, to get them running, one easy method is to run the
+[Polyserve](https://github.com/PolymerLabs/polyserve) web server, you can install it via:
 
-```sh
-python3 -m http.server
-```
+    npm install -g polyserve
 
-Or other method using NodeJS:
+And you can run it via:
 
-```sh
-http-server ./
-```
+    polyserve
 
-This starts a web server on port 8000, so you can test this element by navigating a browser to `localhost:8000/test/index.html`.
+Once running, you can preview this element at
+`http://localhost:8080/components/img-fixheight/`, where `img-fixheight` is the name of the directory containing it.
+
+
+
+## Testing Your Element
+
+Simply navigate to the `/test` directory of your element to run its tests. If
+you are using Polyserve: `http://localhost:8080/components/img-fixheight/test/`
 
 ### web-component-tester
 
-The tests are also compatible with [web-component-tester](https://github.com/Polymer/web-component-tester). You can run
-them on multiple local browsers via:
+The tests are also compatible with [web-component-tester](https://github.com/Polymer/web-component-tester).
+Install it via:
 
-```sh
-npm install -g web-component-tester
-wct
-```
+    npm install -g web-component-tester
+
+Then, you can run your tests on _all_ of your local browsers via:
+
+    wct
+
+## WCT Tips
+
+		`wct -l chrome` will only run tests in chrome.
+
+		`wct -p` will keep the browsers alive after test runs (refresh to re-run).
+
+		`wct test/some-file.html` will test only the files you specify.
 
 ## License
 
