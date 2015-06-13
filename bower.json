@@ -19,7 +19,8 @@
   "homepage": "https://github.com/didrocks/img-fixheight/",
   "ignore": [
     "/.*",
-    "/tests/"
+    "/tests/",
+    "/demo/"
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.0.0"
