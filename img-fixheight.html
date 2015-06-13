@@ -111,151 +111,181 @@ You can use the `prepare-image` tool to generate them server-side. See the [read
 @status alpha
 @homepage https://didrocks.github.io/img-fixheight
 -->
-<polymer-element name="img-fixheight" attributes="srcpattern alt height widths ratios limitmaxwidth alignleft alignright">
+<dom-module id="img-fixheight">
+
+  <style>
+    picture {
+      overflow: hidden;
+      display: block;
+    }
+
+    img {
+      position: relative;
+      left: 50%;
+      transform: translate(-50%, 0);
+    }
+
+    img[imgleft] {
+      left: 0;
+      transform: translate(0, 0);
+    }
+
+    img[imgright] {
+      left: 100%;
+      transform: translate(-100%, 0);
+    }
+  </style>
 
   <template>
-
-    <link rel="stylesheet" href="img-fixheight.css">
-
     <picture>
-      <template repeat="{{breakpoint in sortedwidths | definebreakpoints}}">
-        <source media="(min-width: {{breakpoint}}px)" srcset="{{computesrcset(srcpattern, breakpoint, height, ratios, limitmaxwidth)}}">
+      <template is="dom-repeat" items="{{_definebreakpoints(_sortedwidths)}}" as="breakpoint">
+        <source media$="{{_mediabreakpointstring(breakpoint)}}"
+                srcset$="{{_computesrcset(srcpattern, breakpoint, height, ratios, limitmaxwidth)}}" >
       </template>
-      <img imgleft?="{{alignleft}}" imgright?="{{alignright}}"
-          src="{{patterntopath(srcpattern, maxint(widths), height)}}"
-          srcset="{{computesrcset(srcpattern, 0, height, ratios, limitmaxwidth)}}"
-          alt="{{alt}}" />
+      <img imgleft$="{{alignleft}}" imgright$="{{alignright}}"
+           src$="{{_patterntopath(srcpattern, _maxwidth, height)}}"
+           srcset$="{{_computesrcset(srcpattern, _zero, height, ratios, limitmaxwidth)}}"
+           alt$="{{alt}}" />
     </picture>
-
   </template>
 
-  <script>
-    Polymer({
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'img-fixheight',
+
+    properties: {
+
       /**
-       * The `srcpattern` attribute is used to format all image names. Four :
-       * will be replaced by the resolution name
+       * Set the imagine naming scheme. The 4 ':'
+       * will be replaced by the resolution.
        * Example: img/banner1_::::.jpg will be transformed to
        *          img/banner1_1024x560.jpg if such a resolution is generated.
-       *
-       * @attribute srcpattern
-       * @type string
-       * @default '::::'
        */
-       srcpattern: '::::',
+      srcpattern: {
+        type: String,
+        value: '::::'
+      },
 
       /**
-      * The `alt` attribute is used as alt attribute for the <img> tag.
-      *
-      * @attribute alt
-      * @type string
-      * @default ''
-      */
-      alt: '',
-
-      /**
-       * The `height` attribute sets the fixed height at 1x
-       *
-       * @attribute height
-       * @type int
-       * @default 0
+       * Set the alt attribute of the <img> tag.
        */
-      height: 0,
+      alt: String,
 
-      created: function() {
-        /**
-        * `widths` is an array of different widths used to define breakpoints and maximum widths for images at 1x.
-        * Browsers not supporting picture or srcset will use the maximum specified width in the list at 1x.
-        *
-        * @property widths
-        * @type array[int]
-        * @default []
-        */
-        this.widths = [];
-
-        /**
-        * `ratios` is an array of different ratios used for reponsive images
-        *
-        * @property ratios
-        * @type array[int]
-        * @default [1]
-        */
-        this.ratios = [1];
+      /**
+       * Fixed height in pixels at 1x
+       */
+      height: {
+        type: Number,
+        value: 0
       },
 
       /**
-      * `limitmaxwidth` is a property to limit all images to the maximum width property even if breakpoint width * scale factor is larger than it.
-      *
-      * @property limitmaxwidth
-      * @type bool
-      * @default false
-      */
-      limitmaxwidth: false,
+       * An array of different widths used to define breakpoints and maximum widths in pixels for images at 1x.
+       * Browsers not supporting picture or srcset will use the maximum specified width in the list at 1x.
+       */
+      widths: {
+        type: Array,
+        value: function() {
+          return [];
+        }
+      },
 
       /**
-      * `alignleft` is a property to align the image left instead of centering.
-      *
-      * @property alignleft
-      * @type bool
-      * @default false
-      */
-      alignleft: false,
+       * `An array of different ratios used for reponsive images
+       */
+      ratios: {
+        type: Array,
+        value: function() {
+          return [1];
+        }
+      },
 
       /**
-      * `alignright` is a property to align the image right instead of centering.
-      *
-      * @property alignright
-      * @type bool
-      * @default false
-      */
-      alignright: false,
-
-      computed: {
-        maxwidth: 'maxint(widths)',
-        sortedwidths: 'sortint(widths)',
+       * Limit all images to the maximum width property even if breakpoint width * scale factor is larger than it.
+       */
+      limitmaxwidth: {
+        type: Boolean,
+        value: false
       },
 
-      /* sort in ascending order an int array */
-      sortint: function(values) {
-        return values.sort(function(a, b) { return a-b });
+      /**
+       * Align the image left instead of centering.
+       */
+      alignleft: Boolean,
+
+      /**
+       * Align the image right instead of centering.
+       */
+      alignright: Boolean,
+
+      /* Max width of all provided widths at 1x */
+      _maxwidth: {
+        type: Array,
+        computed: '_maxint(widths)'
       },
 
-      /* return max integer from an array */
-      maxint: function(values) {
-        return this.sortint(values)[values.length - 1];
+      /* Sorted array of all widths at 1x */
+      _sortedwidths: {
+        type: Array,
+        computed: '_sortint(widths)'
       },
 
-      /* convert from a srcpattern to img path */
-      patterntopath: function (srcpattern, width, height) {
-        return srcpattern.replace("::::", width + "x" + height);
-      },
+      /* Expressions can't take constant, so set it here */
+      _zero: {
+        type: Number,
+        value: 0,
+        readonly: true
+      }
 
-      /* return srset for a breakpoint width value, at various pixel ratios */
-      computesrcset: function(srcpattern, breakpoint, height, ratios, limitmaxwidth) {
-        width = this.sortedwidths[this.sortedwidths.indexOf(breakpoint) + 1];
-        srcset = ""
+    },
 
-        ratios.forEach(function (ratio) {
-          scaled_width = width * ratio;
-          scaled_height = height * ratio;
-          if (limitmaxwidth === true && scaled_width > this.maxwidth)
-            scaled_width = this.maxwidth;
-          srcset += this.patterntopath(srcpattern, scaled_width, scaled_height) + " " + ratio +"x, ";
-        }.bind(this));
+    /* return unique breakpoints in desc order: */
+    _definebreakpoints: function(sortedwidth) {
+      return sortedwidth.filter(this._unique).slice(0, -1).reverse();
+    },
 
-        return srcset;
-      },
+    /* return media= string for breakpoint */
+    _mediabreakpointstring: function(breakpoint) {
+      return "(min-width: " + breakpoint + "px)";
+    },
 
-      /* return unique array elements */
-      _unique: function(value, index, array) {
-        return array.indexOf(value) === index;
-      },
+    /* return srset for a breakpoint width value, at various pixel ratios */
+    _computesrcset: function(srcpattern, breakpoint, height, ratios, limitmaxwidth) {
+      width = this._sortedwidths[this._sortedwidths.indexOf(breakpoint) + 1];
+      srcset = ""
 
-      /* return inverse order of unique breakpoints */
-      definebreakpoints: function(breakpoints) {
-        return breakpoints.filter(this._unique).slice(0, -1).reverse();
-      },
+      ratios.forEach(function (ratio) {
+        scaled_width = width * ratio;
+        scaled_height = height * ratio;
+        if (limitmaxwidth === true && scaled_width > this._maxwidth)
+          scaled_width = this._maxwidth;
+        srcset += this._patterntopath(srcpattern, scaled_width, scaled_height) + " " + ratio +"x, ";
+      }.bind(this));
 
-    });
-  </script>
+      return srcset;
+    },
 
-</polymer-element>
+    /* sort in ascending order an int array */
+    _sortint: function(values) {
+      return values.sort(function(a, b) { return a-b });
+    },
+
+    /* return max integer from an array */
+    _maxint: function(values) {
+      return this._sortint(values)[values.length - 1];
+    },
+
+    /* convert from a srcpattern to img path */
+    _patterntopath: function (srcpattern, width, height) {
+      return srcpattern.replace("::::", width + "x" + height);
+    },
+
+    /* return unique array elements */
+    _unique: function(value, index, array) {
+      return array.indexOf(value) === index;
+    }
+
+  });
+</script>
