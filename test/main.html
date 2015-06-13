@@ -1,3 +1,4 @@
+<!doctype html>
 <!--
     @license
     Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
@@ -7,17 +8,17 @@
     Code distributed by Google as part of the polymer project is also
     subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-<!doctype html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <title>img-fixheight</title>
 
-  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
 
   <link rel="import" href="../img-fixheight.html">
+
 </head>
 <body>
 
@@ -48,26 +49,26 @@
       var fixheight = document.querySelector('#classic');
 
       test('has an img fallback with max width, correct height and alt attribute', function() {
-        var img = fixheight.shadowRoot.querySelector('img');
+        var img = Polymer.dom(fixheight.root).querySelector('img');
         assert.ok(img);
         assert.equal(img.alt, "Main banner", "alt message is included");
         assert.include(img.src, "demo/img/banner_2500x560.png", "src for img point to largest image at 1x");
       });
 
       test('img has the smallest srcset if supported', function() {
-        var img = fixheight.shadowRoot.querySelector('img');
+        var img = Polymer.dom(fixheight.root).querySelector('img');
         assert.equal(img.getAttribute('srcset'),
                      "../demo/img/banner_480x560.png 1x, ../demo/img/banner_960x1120.png 2x, ../demo/img/banner_1440x1680.png 3x, ",
                      "srcset includes the smallest img src");
       });
 
       test('contain correct number of source elements, ordered from largest to smallest', function() {
-        var sources = fixheight.shadowRoot.querySelectorAll('source');
+        var sources = Polymer.dom(fixheight.root).querySelectorAll('source');
         assert.equal(sources.length, 4);
       });
 
       test('sources element are order from largest to smallest, with the right srcset attribute including scaling and height', function() {
-        var sources = fixheight.shadowRoot.querySelectorAll('source');
+        var sources = Polymer.dom(fixheight.root).querySelectorAll('source');
         assert.equal(sources[0].getAttribute('media'), "(min-width: 1920px)");
         assert.equal(sources[0].getAttribute('srcset'),
                      "../demo/img/banner_2500x560.png 1x, ../demo/img/banner_5000x1120.png 2x, ../demo/img/banner_7500x1680.png 3x, ");
@@ -89,8 +90,8 @@
       var fixheight = document.querySelector('#limitmaxwidth');
 
       test('has pictures and correct maximum width on all elements', function() {
-        var img = fixheight.shadowRoot.querySelector('img');
-        var sources = fixheight.shadowRoot.querySelectorAll('source');
+        var img = Polymer.dom(fixheight.root).querySelector('img');
+        var sources = Polymer.dom(fixheight.root).querySelectorAll('source');
         assert.include(img.src, "demo/img/banner_3000x560.png", "src for img point to largest image at 1x");
         assert.equal(img.getAttribute('srcset'), "../demo/img/banner_480x560.png 1x, ../demo/img/banner_960x1120.png 2x, ../demo/img/banner_1440x1680.png 3x, ",
                      "srcset includes the smallest img src");
@@ -111,8 +112,8 @@
       var fixheight = document.querySelector('#onescale');
 
       test('has correct elements with only one scale factor', function() {
-        var img = fixheight.shadowRoot.querySelector('img');
-        var sources = fixheight.shadowRoot.querySelectorAll('source');
+        var img = Polymer.dom(fixheight.root).querySelector('img');
+        var sources = Polymer.dom(fixheight.root).querySelectorAll('source');
         assert.include(img.src, "demo/img/banner_3000x560.png", "src for img point the only 1x image");
         assert.equal(img.getAttribute('srcset'), "../demo/img/banner_960x1120.png 2x, ",
                      "srcset includes the smallest img src");
@@ -127,23 +128,23 @@
     suite('Alignements for img-fixheight', function() {
 
       test('default has no left or right alignement class', function() {
-        assert.ok(!document.querySelector('#classic').shadowRoot.querySelector('img').hasAttribute('imgleft'),
+        assert.ok(!Polymer.dom(document.querySelector('#classic').root).querySelector('img').hasAttribute('imgleft'),
                   "no left alignement");
-        assert.ok(!document.querySelector('#classic').shadowRoot.querySelector('img').hasAttribute('imgright'),
+        assert.ok(!Polymer.dom(document.querySelector('#classic').root).querySelector('img').hasAttribute('imgright'),
                   "no right alignement");
       });
 
       test('left align has the left class on img', function() {
-        assert.ok(document.querySelector('#limitmaxwidth').shadowRoot.querySelector('img').hasAttribute('imgleft'),
+        assert.ok(Polymer.dom(document.querySelector('#limitmaxwidth').root).querySelector('img').hasAttribute('imgleft'),
                   "left alignement");
-        assert.ok(!document.querySelector('#limitmaxwidth').shadowRoot.querySelector('img').hasAttribute('imgright'),
+        assert.ok(!Polymer.dom(document.querySelector('#limitmaxwidth').root).querySelector('img').hasAttribute('imgright'),
                   "no right alignement");
       });
 
       test('right align has the right class on img', function() {
-        assert.ok(!document.querySelector('#onescale').shadowRoot.querySelector('img').hasAttribute('imgleft'),
+        assert.ok(!Polymer.dom(document.querySelector('#onescale').root).querySelector('img').hasAttribute('imgleft'),
                   "no left alignement");
-        assert.ok(document.querySelector('#onescale').shadowRoot.querySelector('img').hasAttribute('imgright'),
+        assert.ok(Polymer.dom(document.querySelector('#onescale').root).querySelector('img').hasAttribute('imgright'),
                   "right alignement");
       });
 
@@ -154,8 +155,8 @@
       var fixheight = document.querySelector('#minimalattributes');
 
       test('has a scale factor of 1 and correct breakpoints', function() {
-        var img = fixheight.shadowRoot.querySelector('img');
-        var sources = fixheight.shadowRoot.querySelectorAll('source');
+        var img = Polymer.dom(fixheight.root).querySelector('img');
+        var sources = Polymer.dom(fixheight.root).querySelectorAll('source');
         assert.include(img.src, "1260x560", "src for img point to largest image at 1x, without any path and extensions");
         assert.equal(img.getAttribute('srcset'), "480x560 1x, ");
         assert.equal(sources[0].getAttribute('media'), "(min-width: 960px)");
@@ -165,14 +166,14 @@
       });
 
       test('is middly aligned', function() {
-        assert.ok(!fixheight.shadowRoot.querySelector('img').hasAttribute('imgleft'),
+        assert.ok(!Polymer.dom(fixheight.root).querySelector('img').hasAttribute('imgleft'),
                   "no left alignement");
-        assert.ok(!fixheight.shadowRoot.querySelector('img').hasAttribute('imgright'),
+        assert.ok(!Polymer.dom(fixheight.root).querySelector('img').hasAttribute('imgright'),
                   "no right alignement");
       });
 
-      test('has an empty alt attribute', function() {
-        assert.equal(fixheight.shadowRoot.querySelector('img').getAttribute('alt'), "");
+      test('has no alt attribute', function() {
+        assert.equal(Polymer.dom(fixheight.root).querySelector('img').getAttribute('alt'), null);
       });
 
     });
@@ -183,12 +184,12 @@
       var fixheight = document.querySelector('#onewidth');
 
       test('define only an img element with srcset', function() {
-        var img = fixheight.shadowRoot.querySelector('img');
+        var img = Polymer.dom(fixheight.root).querySelector('img');
         assert.include(img.src, "demo/img/banner_480x560.png", "src for img point to largest image at 1x");
         assert.equal(img.getAttribute('srcset'),
                      "../demo/img/banner_480x560.png 1x, ../demo/img/banner_960x1120.png 2x, ../demo/img/banner_1440x1680.png 3x, ",
                      "srcset includes the smallest img src");
-        assert.equal(fixheight.shadowRoot.querySelectorAll('source').length, 0);
+        assert.equal(Polymer.dom(fixheight.root).querySelectorAll('source').length, 0);
       });
 
     });
@@ -198,8 +199,8 @@
       var fixheight = document.querySelector('#unorderedwidths');
 
       test('doesn\'t impact the content', function() {
-        var img = fixheight.shadowRoot.querySelector('img');
-        var sources = fixheight.shadowRoot.querySelectorAll('source');
+        var img = Polymer.dom(fixheight.root).querySelector('img');
+        var sources = Polymer.dom(fixheight.root).querySelectorAll('source');
         assert.include(img.src, "demo/img/banner_2500x560.png", "src for img point to largest image at 1x");
         assert.equal(img.getAttribute('srcset'),
                      "../demo/img/banner_480x560.png 1x, ../demo/img/banner_960x1120.png 2x, ../demo/img/banner_1440x1680.png 3x, ",
@@ -225,8 +226,8 @@
       var fixheight = document.querySelector('#duplicatewidths');
 
       test('are filtered in a sane number of breakpoints', function() {
-        var img = fixheight.shadowRoot.querySelector('img');
-        var sources = fixheight.shadowRoot.querySelectorAll('source');
+        var img = Polymer.dom(fixheight.root).querySelector('img');
+        var sources = Polymer.dom(fixheight.root).querySelectorAll('source');
         assert.include(img.src, "demo/img/banner_2500x560.png", "src for img point to largest image at 1x");
         assert.equal(sources.length, 4);
         assert.equal(sources[0].getAttribute('media'), "(min-width: 1920px)");
@@ -236,7 +237,6 @@
       });
 
     });
-
   </script>
 
 </body>
