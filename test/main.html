@@ -21,24 +21,24 @@
 </head>
 <body>
 
-  <img-fixheight id="classic" srcpattern="img/banner_::::.jpg" alt="Main banner"
+  <img-fixheight id="classic" srcpattern="../demo/img/banner_::::.png" alt="Main banner"
                  height=560 widths="[480, 960, 1260, 1920, 2500]" ratios="[1, 2, 3]"></img-fixheight>
 
-  <img-fixheight id="limitmaxwidth" srcpattern="img/banner_::::.jpg" alt="Main banner" alignleft limitmaxwidth
+  <img-fixheight id="limitmaxwidth" srcpattern="../demo/img/banner_::::.png" alt="Main banner" alignleft limitmaxwidth
                  height=560 widths="[480, 960, 1260, 1920, 3000]" ratios="[1, 2, 3]"></img-fixheight>
 
-  <img-fixheight id="onescale" srcpattern="img/banner_::::.jpg" alt="Main banner" alignright
+  <img-fixheight id="onescale" srcpattern="../demo/img/banner_::::.png" alt="Main banner" alignright
                  height=560 widths="[480, 960, 1260, 1920, 3000]" ratios="[2]"></img-fixheight>
 
   <img-fixheight id="minimalattributes" height=560 widths="[480, 960, 1260]"></img-fixheight>
 
-  <img-fixheight id="onewidth" srcpattern="img/banner_::::.jpg" height=560 widths="[480]", ratios="[1, 2, 3]">
+  <img-fixheight id="onewidth" srcpattern="../demo/img/banner_::::.png" height=560 widths="[480]", ratios="[1, 2, 3]">
   </img-fixheight>
 
-  <img-fixheight id="unorderedwidths" srcpattern="img/banner_::::.jpg" alt="Main banner"
+  <img-fixheight id="unorderedwidths" srcpattern="../demo/img/banner_::::.png" alt="Main banner"
                  height=560 widths="[480, 2500, 960, 1920, 1260]" ratios="[1, 2, 3]"></img-fixheight>
 
-  <img-fixheight id="duplicatewidths" srcpattern="img/banner_::::.jpg" alt="Main banner"
+  <img-fixheight id="duplicatewidths" srcpattern="../demo/img/banner_::::.png" alt="Main banner"
                 height=560 widths="[480, 1920, 960, 1260, 1920, 1920, 1260, 2500]" ratios="[1, 2, 3]"></img-fixheight>
 
   <script>
@@ -51,12 +51,13 @@
         var img = fixheight.shadowRoot.querySelector('img');
         assert.ok(img);
         assert.equal(img.alt, "Main banner", "alt message is included");
-        assert.include(img.src, "img/banner_2500x560.jpg", "src for img point to largest image at 1x");
+        assert.include(img.src, "demo/img/banner_2500x560.png", "src for img point to largest image at 1x");
       });
 
       test('img has the smallest srcset if supported', function() {
         var img = fixheight.shadowRoot.querySelector('img');
-        assert.equal(img.getAttribute('srcset'), "img/banner_480x560.jpg 1x, img/banner_960x1120.jpg 2x, img/banner_1440x1680.jpg 3x, ",
+        assert.equal(img.getAttribute('srcset'),
+                     "../demo/img/banner_480x560.png 1x, ../demo/img/banner_960x1120.png 2x, ../demo/img/banner_1440x1680.png 3x, ",
                      "srcset includes the smallest img src");
       });
 
@@ -68,13 +69,17 @@
       test('sources element are order from largest to smallest, with the right srcset attribute including scaling and height', function() {
         var sources = fixheight.shadowRoot.querySelectorAll('source');
         assert.equal(sources[0].getAttribute('media'), "(min-width: 1920px)");
-        assert.equal(sources[0].getAttribute('srcset'), "img/banner_2500x560.jpg 1x, img/banner_5000x1120.jpg 2x, img/banner_7500x1680.jpg 3x, ");
+        assert.equal(sources[0].getAttribute('srcset'),
+                     "../demo/img/banner_2500x560.png 1x, ../demo/img/banner_5000x1120.png 2x, ../demo/img/banner_7500x1680.png 3x, ");
         assert.equal(sources[1].getAttribute('media'), "(min-width: 1260px)");
-        assert.equal(sources[1].getAttribute('srcset'), "img/banner_1920x560.jpg 1x, img/banner_3840x1120.jpg 2x, img/banner_5760x1680.jpg 3x, ");
+        assert.equal(sources[1].getAttribute('srcset'),
+                     "../demo/img/banner_1920x560.png 1x, ../demo/img/banner_3840x1120.png 2x, ../demo/img/banner_5760x1680.png 3x, ");
         assert.equal(sources[2].getAttribute('media'), "(min-width: 960px)");
-        assert.equal(sources[2].getAttribute('srcset'), "img/banner_1260x560.jpg 1x, img/banner_2520x1120.jpg 2x, img/banner_3780x1680.jpg 3x, ");
+        assert.equal(sources[2].getAttribute('srcset'),
+                     "../demo/img/banner_1260x560.png 1x, ../demo/img/banner_2520x1120.png 2x, ../demo/img/banner_3780x1680.png 3x, ");
         assert.equal(sources[3].getAttribute('media'), "(min-width: 480px)");
-        assert.equal(sources[3].getAttribute('srcset'), "img/banner_960x560.jpg 1x, img/banner_1920x1120.jpg 2x, img/banner_2880x1680.jpg 3x, ");
+        assert.equal(sources[3].getAttribute('srcset'),
+                     "../demo/img/banner_960x560.png 1x, ../demo/img/banner_1920x1120.png 2x, ../demo/img/banner_2880x1680.png 3x, ");
       });
 
     });
@@ -86,13 +91,17 @@
       test('has pictures and correct maximum width on all elements', function() {
         var img = fixheight.shadowRoot.querySelector('img');
         var sources = fixheight.shadowRoot.querySelectorAll('source');
-        assert.include(img.src, "img/banner_3000x560.jpg", "src for img point to largest image at 1x");
-        assert.equal(img.getAttribute('srcset'), "img/banner_480x560.jpg 1x, img/banner_960x1120.jpg 2x, img/banner_1440x1680.jpg 3x, ",
+        assert.include(img.src, "demo/img/banner_3000x560.png", "src for img point to largest image at 1x");
+        assert.equal(img.getAttribute('srcset'), "../demo/img/banner_480x560.png 1x, ../demo/img/banner_960x1120.png 2x, ../demo/img/banner_1440x1680.png 3x, ",
                      "srcset includes the smallest img src");
-        assert.equal(sources[0].getAttribute('srcset'), "img/banner_3000x560.jpg 1x, img/banner_3000x1120.jpg 2x, img/banner_3000x1680.jpg 3x, ");
-        assert.equal(sources[1].getAttribute('srcset'), "img/banner_1920x560.jpg 1x, img/banner_3000x1120.jpg 2x, img/banner_3000x1680.jpg 3x, ");
-        assert.equal(sources[2].getAttribute('srcset'), "img/banner_1260x560.jpg 1x, img/banner_2520x1120.jpg 2x, img/banner_3000x1680.jpg 3x, ");
-        assert.equal(sources[3].getAttribute('srcset'), "img/banner_960x560.jpg 1x, img/banner_1920x1120.jpg 2x, img/banner_2880x1680.jpg 3x, ");
+        assert.equal(sources[0].getAttribute('srcset'),
+                     "../demo/img/banner_3000x560.png 1x, ../demo/img/banner_3000x1120.png 2x, ../demo/img/banner_3000x1680.png 3x, ");
+        assert.equal(sources[1].getAttribute('srcset'),
+                     "../demo/img/banner_1920x560.png 1x, ../demo/img/banner_3000x1120.png 2x, ../demo/img/banner_3000x1680.png 3x, ");
+        assert.equal(sources[2].getAttribute('srcset'),
+                     "../demo/img/banner_1260x560.png 1x, ../demo/img/banner_2520x1120.png 2x, ../demo/img/banner_3000x1680.png 3x, ");
+        assert.equal(sources[3].getAttribute('srcset'),
+                     "../demo/img/banner_960x560.png 1x, ../demo/img/banner_1920x1120.png 2x, ../demo/img/banner_2880x1680.png 3x, ");
       });
 
     });
@@ -104,13 +113,13 @@
       test('has correct elements with only one scale factor', function() {
         var img = fixheight.shadowRoot.querySelector('img');
         var sources = fixheight.shadowRoot.querySelectorAll('source');
-        assert.include(img.src, "img/banner_3000x560.jpg", "src for img point the only 1x image");
-        assert.equal(img.getAttribute('srcset'), "img/banner_960x1120.jpg 2x, ",
+        assert.include(img.src, "demo/img/banner_3000x560.png", "src for img point the only 1x image");
+        assert.equal(img.getAttribute('srcset'), "../demo/img/banner_960x1120.png 2x, ",
                      "srcset includes the smallest img src");
-        assert.equal(sources[0].getAttribute('srcset'), "img/banner_6000x1120.jpg 2x, ");
-        assert.equal(sources[1].getAttribute('srcset'), "img/banner_3840x1120.jpg 2x, ");
-        assert.equal(sources[2].getAttribute('srcset'), "img/banner_2520x1120.jpg 2x, ");
-        assert.equal(sources[3].getAttribute('srcset'), "img/banner_1920x1120.jpg 2x, ");
+        assert.equal(sources[0].getAttribute('srcset'), "../demo/img/banner_6000x1120.png 2x, ");
+        assert.equal(sources[1].getAttribute('srcset'), "../demo/img/banner_3840x1120.png 2x, ");
+        assert.equal(sources[2].getAttribute('srcset'), "../demo/img/banner_2520x1120.png 2x, ");
+        assert.equal(sources[3].getAttribute('srcset'), "../demo/img/banner_1920x1120.png 2x, ");
       });
 
     });
@@ -175,8 +184,9 @@
 
       test('define only an img element with srcset', function() {
         var img = fixheight.shadowRoot.querySelector('img');
-        assert.include(img.src, "img/banner_480x560.jpg", "src for img point to largest image at 1x");
-        assert.equal(img.getAttribute('srcset'), "img/banner_480x560.jpg 1x, img/banner_960x1120.jpg 2x, img/banner_1440x1680.jpg 3x, ",
+        assert.include(img.src, "demo/img/banner_480x560.png", "src for img point to largest image at 1x");
+        assert.equal(img.getAttribute('srcset'),
+                     "../demo/img/banner_480x560.png 1x, ../demo/img/banner_960x1120.png 2x, ../demo/img/banner_1440x1680.png 3x, ",
                      "srcset includes the smallest img src");
         assert.equal(fixheight.shadowRoot.querySelectorAll('source').length, 0);
       });
@@ -190,17 +200,22 @@
       test('doesn\'t impact the content', function() {
         var img = fixheight.shadowRoot.querySelector('img');
         var sources = fixheight.shadowRoot.querySelectorAll('source');
-        assert.include(img.src, "img/banner_2500x560.jpg", "src for img point to largest image at 1x");
-        assert.equal(img.getAttribute('srcset'), "img/banner_480x560.jpg 1x, img/banner_960x1120.jpg 2x, img/banner_1440x1680.jpg 3x, ",
+        assert.include(img.src, "demo/img/banner_2500x560.png", "src for img point to largest image at 1x");
+        assert.equal(img.getAttribute('srcset'),
+                     "../demo/img/banner_480x560.png 1x, ../demo/img/banner_960x1120.png 2x, ../demo/img/banner_1440x1680.png 3x, ",
                      "srcset includes the smallest img src");
         assert.equal(sources[0].getAttribute('media'), "(min-width: 1920px)");
-        assert.equal(sources[0].getAttribute('srcset'), "img/banner_2500x560.jpg 1x, img/banner_5000x1120.jpg 2x, img/banner_7500x1680.jpg 3x, ");
+        assert.equal(sources[0].getAttribute('srcset'),
+                     "../demo/img/banner_2500x560.png 1x, ../demo/img/banner_5000x1120.png 2x, ../demo/img/banner_7500x1680.png 3x, ");
         assert.equal(sources[1].getAttribute('media'), "(min-width: 1260px)");
-        assert.equal(sources[1].getAttribute('srcset'), "img/banner_1920x560.jpg 1x, img/banner_3840x1120.jpg 2x, img/banner_5760x1680.jpg 3x, ");
+        assert.equal(sources[1].getAttribute('srcset'),
+                     "../demo/img/banner_1920x560.png 1x, ../demo/img/banner_3840x1120.png 2x, ../demo/img/banner_5760x1680.png 3x, ");
         assert.equal(sources[2].getAttribute('media'), "(min-width: 960px)");
-        assert.equal(sources[2].getAttribute('srcset'), "img/banner_1260x560.jpg 1x, img/banner_2520x1120.jpg 2x, img/banner_3780x1680.jpg 3x, ");
+        assert.equal(sources[2].getAttribute('srcset'),
+                     "../demo/img/banner_1260x560.png 1x, ../demo/img/banner_2520x1120.png 2x, ../demo/img/banner_3780x1680.png 3x, ");
         assert.equal(sources[3].getAttribute('media'), "(min-width: 480px)");
-        assert.equal(sources[3].getAttribute('srcset'), "img/banner_960x560.jpg 1x, img/banner_1920x1120.jpg 2x, img/banner_2880x1680.jpg 3x, ");
+        assert.equal(sources[3].getAttribute('srcset'),
+                     "../demo/img/banner_960x560.png 1x, ../demo/img/banner_1920x1120.png 2x, ../demo/img/banner_2880x1680.png 3x, ");
       });
 
     });
@@ -212,7 +227,7 @@
       test('are filtered in a sane number of breakpoints', function() {
         var img = fixheight.shadowRoot.querySelector('img');
         var sources = fixheight.shadowRoot.querySelectorAll('source');
-        assert.include(img.src, "img/banner_2500x560.jpg", "src for img point to largest image at 1x");
+        assert.include(img.src, "demo/img/banner_2500x560.png", "src for img point to largest image at 1x");
         assert.equal(sources.length, 4);
         assert.equal(sources[0].getAttribute('media'), "(min-width: 1920px)");
         assert.equal(sources[1].getAttribute('media'), "(min-width: 1260px)");
