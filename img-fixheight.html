@@ -109,31 +109,30 @@ You can use the `prepare-image` tool to generate them server-side. See the [read
 @demo demo/index.html
 -->
 <dom-module id="img-fixheight">
-
-  <style>
-    picture {
-      overflow: hidden;
-      display: block;
-    }
-
-    img {
-      position: relative;
-      left: 50%;
-      transform: translate(-50%, 0);
-    }
-
-    img[imgleft] {
-      left: 0;
-      transform: translate(0, 0);
-    }
-
-    img[imgright] {
-      left: 100%;
-      transform: translate(-100%, 0);
-    }
-  </style>
-
   <template>
+    <style>
+      picture {
+        overflow: hidden;
+        display: block;
+      }
+
+      img {
+        position: relative;
+        left: 50%;
+        transform: translate(-50%, 0);
+      }
+
+      img[imgleft] {
+        left: 0;
+        transform: translate(0, 0);
+      }
+
+      img[imgright] {
+        left: 100%;
+        transform: translate(-100%, 0);
+      }
+    </style>
+
     <picture>
       <template is="dom-repeat" items="{{_definebreakpoints(_sortedwidths)}}" as="breakpoint">
         <source media$="{{_mediabreakpointstring(breakpoint)}}"
@@ -145,7 +144,6 @@ You can use the `prepare-image` tool to generate them server-side. See the [read
            alt$="{{alt}}" />
     </picture>
   </template>
-
 </dom-module>
 
 <script>
