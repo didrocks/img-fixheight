@@ -21,6 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
 
 <!--
 The `img-fixheight` is an element implementing responsive support for fixed height images.
@@ -96,6 +97,16 @@ Example:
 
 This will align right all images that this element will load.
 
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--img-fixheight-overlay` | Overlay div styling | `{}`
+
+This mixin is used to style the overlay div, like adding a background gradient css on top of your image.
+
 ### Support note
 
 Browser not supporting the <picture> and srcset elements will default to the maximum specified width at 1x. In that
@@ -111,6 +122,10 @@ You can use the `prepare-image` tool to generate them server-side. See the [read
 <dom-module id="img-fixheight">
   <template>
     <style>
+      #imgwrapper {
+        position: relative
+      }
+
       picture {
         overflow: hidden;
         display: block;
@@ -131,18 +146,25 @@ You can use the `prepare-image` tool to generate them server-side. See the [read
         left: 100%;
         transform: translate(-100%, 0);
       }
+
+      #overlay {
+        @apply(--img-fixheight-overlay);
+      }
     </style>
 
-    <picture>
-      <template is="dom-repeat" items="{{_definebreakpoints(_sortedwidths)}}" as="breakpoint">
-        <source media$="{{_mediabreakpointstring(breakpoint)}}"
-                srcset$="{{_computesrcset(srcpattern, breakpoint, height, ratios, limitmaxwidth)}}" >
-      </template>
-      <img imgleft$="{{alignleft}}" imgright$="{{alignright}}"
-           src$="{{_patterntopath(srcpattern, _maxwidth, height)}}"
-           srcset$="{{_computesrcset(srcpattern, _zero, height, ratios, limitmaxwidth)}}"
-           alt$="{{alt}}" />
-    </picture>
+    <div id="imgwrapper" class="layout vertical">
+      <picture>
+        <template is="dom-repeat" items="{{_definebreakpoints(_sortedwidths)}}" as="breakpoint">
+          <source media$="{{_mediabreakpointstring(breakpoint)}}"
+                  srcset$="{{_computesrcset(srcpattern, breakpoint, height, ratios, limitmaxwidth)}}" >
+        </template>
+        <img imgleft$="{{alignleft}}" imgright$="{{alignright}}"
+             src$="{{_patterntopath(srcpattern, _maxwidth, height)}}"
+             srcset$="{{_computesrcset(srcpattern, _zero, height, ratios, limitmaxwidth)}}"
+             alt$="{{alt}}" />
+      </picture>
+      <div id="overlay" class="fit"></div>
+    </div>
   </template>
 </dom-module>
 
