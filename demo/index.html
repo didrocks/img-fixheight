@@ -28,6 +28,13 @@
   <title>img-fixheight Demo</title>
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="../img-fixheight.html">
+  <style is="custom-style">
+    #gradient-overlay {
+      --img-fixheight-overlay: {
+          background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.5));
+      };
+    }
+  </style>
 </head>
 <body>
 
@@ -52,6 +59,16 @@
                    height=560 widths="[480, 960, 1260, 1920, 2500]" ratios="[1, 2, 3]">
     </img-fixheight>
   </div>
+
+  <h1>Image with overlay gradient style</h1>
+
+  <p>An example of using the <code>--img-fixheight-overlay</code> to style the overlay img content. This is using the
+    same parameters than the first example, apart from the gradient overlay.
+  </p>
+
+  <img-fixheight id="gradient-overlay" srcpattern="img/banner_::::.png" alt="Main banner"
+                 height=560 widths="[480, 960, 1260, 1920, 2500]" ratios="[1, 2, 3]">
+  </img-fixheight>
 
 </body>
 </html>
