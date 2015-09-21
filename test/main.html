@@ -32,6 +32,14 @@ THE SOFTWARE.
 
   <link rel="import" href="../img-fixheight.html">
 
+  <style is="custom-style">
+    #classic {
+      --img-fixheight-overlay: {
+        background: rgba(0, 0, 0, 0.2);
+      };
+    }
+  </style>
+
 </head>
 <body>
 
@@ -247,6 +255,24 @@ THE SOFTWARE.
         assert.equal(sources[1].getAttribute('media'), "(min-width: 1260px)");
         assert.equal(sources[2].getAttribute('media'), "(min-width: 960px)");
         assert.equal(sources[3].getAttribute('media'), "(min-width: 480px)");
+      });
+
+    });
+
+    suite('img-fixheight with styled overlay', function() {
+
+      var fixheight = document.querySelector('#classic');
+
+      test('has an overlay div matching element size', function() {
+        var overlaydiv = Polymer.dom(fixheight.root).querySelector('#overlay');
+        assert.ok(overlaydiv);
+        assert.equal(overlaydiv.getBoundingClientRect().width,  fixheight.getBoundingClientRect().width);
+        assert.equal(overlaydiv.getBoundingClientRect().height,  fixheight.getBoundingClientRect().height);
+      });
+
+      test('has an overlay div styled by --img-fixheight-overlay', function() {
+        var overlaydiv = Polymer.dom(fixheight.root).querySelector('#overlay');
+        assert.equal(window.getComputedStyle(overlaydiv, null).backgroundColor, "rgba(0, 0, 0, 0.2)");
       });
 
     });
