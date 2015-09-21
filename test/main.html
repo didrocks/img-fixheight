@@ -76,12 +76,12 @@ THE SOFTWARE.
       });
 
       test('contain correct number of source elements, ordered from largest to smallest', function() {
-        var sources = Polymer.dom(fixheight.root).querySelectorAll('source');
+        var sources = Polymer.dom(fixheight.root).querySelector('picture').querySelectorAll('source');
         assert.equal(sources.length, 4);
       });
 
       test('sources element are order from largest to smallest, with the right srcset attribute including scaling and height', function() {
-        var sources = Polymer.dom(fixheight.root).querySelectorAll('source');
+        var sources = Polymer.dom(fixheight.root).querySelector('picture').querySelectorAll('source');
         assert.equal(sources[0].getAttribute('media'), "(min-width: 1920px)");
         assert.equal(sources[0].getAttribute('srcset'),
                      "../demo/img/banner_2500x560.png 1x, ../demo/img/banner_5000x1120.png 2x, ../demo/img/banner_7500x1680.png 3x, ");
@@ -104,7 +104,7 @@ THE SOFTWARE.
 
       test('has pictures and correct maximum width on all elements', function() {
         var img = Polymer.dom(fixheight.root).querySelector('img');
-        var sources = Polymer.dom(fixheight.root).querySelectorAll('source');
+        var sources = Polymer.dom(fixheight.root).querySelector('picture').querySelectorAll('source');
         assert.include(img.src, "demo/img/banner_3000x560.png", "src for img point to largest image at 1x");
         assert.equal(img.getAttribute('srcset'), "../demo/img/banner_480x560.png 1x, ../demo/img/banner_960x1120.png 2x, ../demo/img/banner_1440x1680.png 3x, ",
                      "srcset includes the smallest img src");
@@ -126,7 +126,7 @@ THE SOFTWARE.
 
       test('has correct elements with only one scale factor', function() {
         var img = Polymer.dom(fixheight.root).querySelector('img');
-        var sources = Polymer.dom(fixheight.root).querySelectorAll('source');
+        var sources = Polymer.dom(fixheight.root).querySelector('picture').querySelectorAll('source');
         assert.include(img.src, "demo/img/banner_3000x560.png", "src for img point the only 1x image");
         assert.equal(img.getAttribute('srcset'), "../demo/img/banner_960x1120.png 2x, ",
                      "srcset includes the smallest img src");
@@ -169,7 +169,7 @@ THE SOFTWARE.
 
       test('has a scale factor of 1 and correct breakpoints', function() {
         var img = Polymer.dom(fixheight.root).querySelector('img');
-        var sources = Polymer.dom(fixheight.root).querySelectorAll('source');
+        var sources = Polymer.dom(fixheight.root).querySelector('picture').querySelectorAll('source');
         assert.include(img.src, "1260x560", "src for img point to largest image at 1x, without any path and extensions");
         assert.equal(img.getAttribute('srcset'), "480x560 1x, ");
         assert.equal(sources[0].getAttribute('media'), "(min-width: 960px)");
@@ -202,7 +202,7 @@ THE SOFTWARE.
         assert.equal(img.getAttribute('srcset'),
                      "../demo/img/banner_480x560.png 1x, ../demo/img/banner_960x1120.png 2x, ../demo/img/banner_1440x1680.png 3x, ",
                      "srcset includes the smallest img src");
-        assert.equal(Polymer.dom(fixheight.root).querySelectorAll('source').length, 0);
+        assert.equal(Polymer.dom(fixheight.root).querySelector('picture').querySelectorAll('source').length, 0);
       });
 
     });
@@ -213,7 +213,7 @@ THE SOFTWARE.
 
       test('doesn\'t impact the content', function() {
         var img = Polymer.dom(fixheight.root).querySelector('img');
-        var sources = Polymer.dom(fixheight.root).querySelectorAll('source');
+        var sources = Polymer.dom(fixheight.root).querySelector('picture').querySelectorAll('source');
         assert.include(img.src, "demo/img/banner_2500x560.png", "src for img point to largest image at 1x");
         assert.equal(img.getAttribute('srcset'),
                      "../demo/img/banner_480x560.png 1x, ../demo/img/banner_960x1120.png 2x, ../demo/img/banner_1440x1680.png 3x, ",
@@ -240,7 +240,7 @@ THE SOFTWARE.
 
       test('are filtered in a sane number of breakpoints', function() {
         var img = Polymer.dom(fixheight.root).querySelector('img');
-        var sources = Polymer.dom(fixheight.root).querySelectorAll('source');
+        var sources = Polymer.dom(fixheight.root).querySelector('picture').querySelectorAll('source');
         assert.include(img.src, "demo/img/banner_2500x560.png", "src for img point to largest image at 1x");
         assert.equal(sources.length, 4);
         assert.equal(sources[0].getAttribute('media'), "(min-width: 1920px)");
