@@ -1,0 +1,153 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Copyright (c) 2015 Didier Roche <didrocks@ubuntu.com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+
+import argparse
+from contextlib import suppress
+import logging
+import os
+import sys
+
+try:
+    from PIL import Image
+except ImportError:
+    logging.error("PIL module isn't installed, please get python3-pil on your system to manipulate images.")
+    sys.exit(2)
+
+logger = logging.getLogger(__name__)
+
+
+def save_img(img, path, src_img):
+    '''Save image preserving image format. Return if save was successful'''
+    try:
+        args = {}
+        with suppress(AttributeError):
+            args = {'qtables': img.quantization}
+        img.save(path, **args)
+    except IOError as e:
+        logger.error("Couldn't save {}: {}".format(path, e))
+        return False
+    return True
+
+def main(argv):
+
+    parser = argparse.ArgumentParser(description="Generate images for different scale factors at correct breakpoints")
+    parser.add_argument("--debug", action="store_true", help="Show debug infos")
+
+    parser.add_argument('height', type=int, help='Fixed height at 1x in pixels')
+    parser.add_argument('-b', '--breakpoint', type=int, action='append', required=True,
+                        help='Add a width breakpoint in css pixels. At least one is required')
+    parser.add_argument('dest_pattern', metavar="dest-pattern", help='Destination pattern. Should contain :::: to '
+                                                                     'replace with resolution size')
+    parser.add_argument('img_to_scale', metavar='imgpath:scale', nargs='+',
+                        help='Image that will need to be cut. Format: "path-to-image:scale-factor". Only one image per '
+                             'scale factor is allowed. Not specifying the scale-factor imply scale-factor to be 1.')
+
+    args = parser.parse_args(argv)
+
+    # set debug level
+    if args.debug:
+        log_level = logging.DEBUG
+    else:
+        log_level = logging.WARNING
+    logging.basicConfig(level=log_level, format="%(levelname)s: %(message)s")
+
+    # ensure dest_pattern is respected
+    if not '::::' in args.dest_pattern:
+        logger.error("No :::: in dest-pattern. This is required")
+        return 1
+
+    # collect source images
+    img_src = {}
+    for img_arg in args.img_to_scale:
+        try:
+            (path, scale) = img_arg.split(':')
+            scale = float(scale)
+        except ValueError:
+            path = img_arg
+            scale = 1
+        # only one image per scale is allowed
+        if scale in img_src:
+            logger.error("There are multiple source images defined for the same scale factor of {}. This isn't allowed."
+                         "".format(scale))
+            return 1
+        try:
+            img_src[scale] = Image.open(path)
+        except FileNotFoundError as e:
+            logger.error(e)
+            return 1
+        logger.debug("Opened {} defined for scale: {}".format(path, scale))
+
+    # warn if there is any height size issue
+    for scale in img_src:
+        img = img_src[scale]
+        logger.debug("Checking dimensions of {}".format(img.filename))
+        (width, height) = img.size
+        # height
+        if int(scale * args.height) != height:
+            logger.error("{path} doesn't respect fixed height: {height} * {scale} != {imgheight}"
+                         .format(path=img.filename, height=args.height, scale=scale, imgheight=height))
+            return 1
+
+    # ensure dest directory can be accessed
+    with suppress(FileExistsError):
+        dest_dir = os.path.dirname(args.dest_pattern)
+        logger.debug("Ensuring {} exists".format(dest_dir))
+        os.makedirs(dest_dir)
+
+    all_imgs_saved = True
+
+    # now, crop the images
+    for breakpoint in args.breakpoint:
+        logger.debug("Treating breakpoint at {}".format(breakpoint))
+        for scale in img_src:
+            img = img_src[scale]
+            (src_width, src_height) = img.size
+            width = int(breakpoint * scale)
+            height = int(args.height * scale)
+            logger.debug("Image scale at {}. Generating {}x{}".format(scale, width, height))
+            if width > src_width:
+                logger.warning("{path} is smaller than this breakpoint at {breakpoint}. Won't be able to crop that "
+                               "image at this width: {width} < {breakpoint} * {scale} "
+                               .format(path=img.filename, scale=scale, breakpoint=breakpoint, width=src_width))
+                continue
+            # note that due to previous check, top & bottom should match.
+            left = int((src_width - width) / 2)
+            top = int((src_height - height) / 2)
+            right = int((src_width + width) / 2)
+            bottom = int((src_height + height) / 2)
+            new_img = img.crop((left, top, right, bottom))
+            path = args.dest_pattern.replace("::::", "{}x{}".format(width, height))
+            all_imgs_saved = all_imgs_saved and save_img(new_img, path, img)
+
+    # copy max width image
+    for scale in img_src:
+        img = img_src[scale]
+        (width, height) = img.size
+        path = args.dest_pattern.replace("::::", "{}x{}".format(width, height))
+        all_imgs_saved = all_imgs_saved and save_img(img, path, img)
+
+    return 0 if all_imgs_saved else 1
+
+if __name__ == '__main__':
+    status = main(sys.argv[1:])
+    sys.exit(status)
