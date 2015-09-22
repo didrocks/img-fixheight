@@ -76,6 +76,11 @@ THE SOFTWARE.
         assert.include(img.src, "demo/img/banner_2500x560.png", "src for img point to largest image at 1x");
       });
 
+      test('has an img height matching element size', function() {
+        var img = Polymer.dom(fixheight.root).querySelector('img');
+        assert.equal(img.getBoundingClientRect().height, fixheight.getBoundingClientRect().height);
+      });
+
       test('img has the smallest srcset if supported', function() {
         var img = Polymer.dom(fixheight.root).querySelector('img');
         assert.equal(img.getAttribute('srcset'),
