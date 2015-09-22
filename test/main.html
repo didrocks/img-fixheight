@@ -153,25 +153,25 @@ THE SOFTWARE.
 
     suite('Alignements for img-fixheight', function() {
 
-      test('default has no left or right alignement class', function() {
+      test('default has no left or right alignment class', function() {
         assert.ok(!Polymer.dom(document.querySelector('#classic').root).querySelector('img').hasAttribute('imgleft'),
-                  "no left alignement");
+                  "no left alignment");
         assert.ok(!Polymer.dom(document.querySelector('#classic').root).querySelector('img').hasAttribute('imgright'),
-                  "no right alignement");
+                  "no right alignment");
       });
 
       test('left align has the left class on img', function() {
         assert.ok(Polymer.dom(document.querySelector('#limitmaxwidth').root).querySelector('img').hasAttribute('imgleft'),
-                  "left alignement");
+                  "left alignment");
         assert.ok(!Polymer.dom(document.querySelector('#limitmaxwidth').root).querySelector('img').hasAttribute('imgright'),
-                  "no right alignement");
+                  "no right alignment");
       });
 
       test('right align has the right class on img', function() {
         assert.ok(!Polymer.dom(document.querySelector('#onescale').root).querySelector('img').hasAttribute('imgleft'),
-                  "no left alignement");
+                  "no left alignment");
         assert.ok(Polymer.dom(document.querySelector('#onescale').root).querySelector('img').hasAttribute('imgright'),
-                  "right alignement");
+                  "right alignment");
       });
 
     });
@@ -193,9 +193,9 @@ THE SOFTWARE.
 
       test('is middly aligned', function() {
         assert.ok(!Polymer.dom(fixheight.root).querySelector('img').hasAttribute('imgleft'),
-                  "no left alignement");
+                  "no left alignment");
         assert.ok(!Polymer.dom(fixheight.root).querySelector('img').hasAttribute('imgright'),
-                  "no right alignement");
+                  "no right alignment");
       });
 
       test('has no alt attribute', function() {
